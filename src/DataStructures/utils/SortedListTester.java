@@ -1,4 +1,4 @@
-package DataStructures.utils;
+package utils;
 
 import DataStructures.SortedList.SortedLinkedList;
 import DataStructures.SortedList.SortedList;

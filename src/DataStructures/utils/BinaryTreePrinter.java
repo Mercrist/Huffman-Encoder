@@ -1,4 +1,4 @@
-package DataStructures.utils;
+package utils;
 
 import DataStructures.List.ArrayList;
 import DataStructures.List.List;

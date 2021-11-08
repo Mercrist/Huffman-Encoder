@@ -1,4 +1,4 @@
-package DataStructures.HashTable;
+package HashTable;
 
 import java.io.PrintStream;
 

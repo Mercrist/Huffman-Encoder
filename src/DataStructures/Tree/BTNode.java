@@ -1,4 +1,4 @@
-package DataStructures.Tree;
+package Tree;
 
 import DataStructures.utils.BinaryTreePrinter.PrintableNode;
 
