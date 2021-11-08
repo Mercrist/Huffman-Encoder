@@ -1,7 +1,6 @@
 package utils;
 
-import DataStructures.SortedList.SortedLinkedList;
-import DataStructures.SortedList.SortedList;
+import SortedList.*;
 
 public class SortedListTester {
 
