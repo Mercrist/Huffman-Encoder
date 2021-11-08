@@ -2,12 +2,10 @@
 # ADD YOUR NAME & STUDENT ID HERE
 # Project 2 - Huffman Coding
 
-<p> To run this project: </p>
-<ol> 
-	<li> Go to ```src/main/java/prj02/HuffmanCoding.java``` </li>
-	<li> Once there, look for the <code> HuffmanEncodedResult </code> mehtod that has already been implemented for you </li>
-	<li> Make sure the <code> load_data </code> methodhas as parameter a valid input <code> .txt </code> file that is stored in the <code> inputData </code> directory
-	<li> Compile and Run the ```HuffmanCoding.java``` file and the code should run if implemented correctly
-</ol>
+## To run this project:
++ Go to `src/main/java/prj02/HuffmanCoding.java`
++ Once there, look for the `HuffmanEncodedResul` mehtod that has already been implemented for you
++ Make sure the ` load_data ` methodhas as parameter a valid input ` .txt ` file that is stored in the ` inputData ` directory
++ Compile and Run the ```HuffmanCoding.java``` file and the code should run if implemented correctly
 
-<p> If you wish to see the full huffman tree generated, use the <code> BinaryTreePrinter </code> class provided
+## If you wish to see the full huffman tree generated, use the `BinaryTreePrinter` class provided
