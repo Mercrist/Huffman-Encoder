@@ -48,12 +48,12 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 		public void clear() {
 			value = null;
 			next = null;
-		}				
+		}
 	} // End of Node class
 
-	
+
 	private Node<E> head; // First DATA node (This is NOT a dummy header node)
-	
+
 	public SortedLinkedList() {
 		head = null;
 		currentSize = 0;
@@ -63,8 +63,23 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 	public void add(E e) {
 		/* TODO ADD CODE HERE */
 		/* Special case: Be careful when the new value is the smallest */
-		Node<E> newNode = new Node<>(e);
-		Node<E> curNode;
+		if(currentSize == 0){
+			head = new Node<E>(e);
+
+		}
+		else if(e.compareTo(head.value) < 0){ //new value smaller than head
+			head = new Node<E>(e, head); //value added becomes the new head with a next set to the old head
+		}
+
+		else{
+			Node<E> node = head;
+			while(node.next != null && e.compareTo(node.next.value) > 0){ //while e is the biggest value
+				node = node.next;
+			}
+			node.next = new Node<E>(e, node.next);
+		}
+
+		currentSize++;
 
 	}
 
@@ -72,37 +87,109 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 	public boolean remove(E e) {
 		/* TODO ADD CODE HERE */
 		/* Special case: Be careful when the value is found at the head node */
-		Node<E> rmNode, curNode;
-		
-		return false; //Dummy Return
+		if(currentSize < 1) throw new ArrayIndexOutOfBoundsException("Can't remove items from an empty list!");
+
+		Node<E> toDelete;
+		if(head.value.equals(e)){
+			toDelete = head;
+			head = head.next;
+			toDelete.clear();
+			currentSize--;
+			return true;
+		}
+
+		Node<E> node = head;
+		while(node.next != null){
+			if(node.next.value.equals(e)){
+				toDelete = node.next;
+				node.next = node.next.next;
+				toDelete.clear();
+				currentSize--;
+				return true;
+			}
+			node = node.next;
+		}
+		return false;
 	}
 
 	@Override
-	public E removeIndex(int index) {
+	public E removeIndex(int index) { //won't use remove() to reduce time complexity
 		/* TODO ADD CODE HERE */
 		/* Special case: Be careful when index = 0 */
-		Node<E> rmNode, curNode;
-		E value = null;
-		
-		return value; //Dummy Return
+		if(index < 0 || index > currentSize-1)
+			throw new IndexOutOfBoundsException("Can't remove index: " + index);
+
+		Node<E> toDelete;
+		E val;
+		Node<E> node;
+		if(index == 0){
+			toDelete = head;
+			val = head.value;
+			head = head.next;
+			toDelete.clear();
+			currentSize--;
+			return val;
+		}
+
+		int i = 0;
+		node = head; //already checked the head
+		while(node.next != null){ //else, search for the node in the list
+			if(i+1 == index){
+				toDelete = node.next; //store data
+				val = node.next.value;
+
+				node.next = node.next.next; //delete element
+				toDelete.clear();
+				currentSize--;
+				return val;
+			}
+			node = node.next;
+			i++;
+		}
+		return null;
 	}
 
 	@Override
 	public int firstIndex(E e) {
 		/* TODO ADD CODE HERE */
-		int target = -1;
-		
-		return target; //Dummy Return
+		if(head.value.equals(e)){
+			return 0;
+		}
+
+		Node<E> node = head;
+		int index = 0;
+		while(node != null){
+			if(node.value.equals(e)){
+				return index;
+			}
+			node = node.next;
+			index++;
+		}
+		return -1;
 	}
 
 	@Override
 	public E get(int index) {
 		/* TODO ADD CODE HERE */
-		
-		return null; //Dummy Return
+		if(index < 0 || index > currentSize-1) throw new IndexOutOfBoundsException("Invalid index!");
+
+		if(index == 0){
+			return head.value;
+		}
+
+		Node<E> node = head;
+		int i = 0;
+		while(node != null){
+			if(i == index){
+				return node.value;
+			}
+			node = node.next;
+			i++;
+		}
+		return null;
 	}
 
-	
+
 
 	@SuppressWarnings("unchecked")
 	@Override
