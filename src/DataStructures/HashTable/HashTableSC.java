@@ -93,12 +93,9 @@ public class HashTableSC<K, V> implements Map<K, V> {
 		 * so remove existing element with the given key (if any) */
 		remove(key);
 		
-		if((size() / buckets.length) > loadFactor) {
-			//System.out.println("REHASHING NEEDED");
+		if((double)(size() / buckets.length) >= loadFactor) {
 			rehash();
 		}
-		
-		//System.out.println("Adding Element with key: " + key);
 
 		/* Determine the bucket corresponding to this key */
 		int targetBucket = hashFunction.hashCode(key) % buckets.length;
@@ -188,24 +185,22 @@ public class HashTableSC<K, V> implements Map<K, V> {
 	 */
 	@SuppressWarnings("unchecked")
 	private void rehash() {
-		List<BucketNode<K,V>>[] oldMap = buckets;
-		List<BucketNode<K,V>>[] newMap = new LinkedList[size() * 2];
-		buckets = newMap;
-		for (int i = 0; i < buckets.length; i++) {
-			buckets[i] = new LinkedList<BucketNode<K,V>>();
-		}
-		for (List<BucketNode<K, V>> list : oldMap) {
-			for (BucketNode<K, V> old : list) {
-				/* Determine the bucket corresponding to this key */
-				int targetBucket = hashFunction.hashCode(old.getKey()) % buckets.length;
-				/* Within that bucket there is a linked list, since we're using Separate Chaining */
-				List<BucketNode<K, V>> L = buckets[targetBucket];
-				/* Finally, add the key/value to the linked list */
-				L.add(0, new BucketNode<K, V>(old.getKey(), old.getValue()));
+		List<BucketNode<K, V>>[] newBuckets = new LinkedList[buckets.length*2];
 
+		for(int i = 0; i < newBuckets.length; i++){ //initialize as empty singly linked lists
+			newBuckets[i] = new LinkedList<BucketNode<K, V>>();
+		}
+
+		for (List<BucketNode<K, V>> list : buckets) { //get each linked list
+			for (int j = 0; j < list.size(); j++) { //rehash every element in that list
+				BucketNode<K, V> node = list.get(j); //each node in each singly linked list
+				int newBucketIndex = hashFunction.hashCode(node.getKey()) % newBuckets.length; //new hash index
+				newBuckets[newBucketIndex].add(node);
 			}
+
 		}
 
+		buckets = newBuckets; //new rehashed bucket list
 	}
 
 

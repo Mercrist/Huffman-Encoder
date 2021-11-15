@@ -125,6 +125,7 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 		if(index == 0){
 			toDelete = head;
 			val = head.value;
+
 			head = head.next;
 			toDelete.clear();
 			currentSize--;
