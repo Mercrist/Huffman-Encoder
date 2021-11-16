@@ -152,34 +152,31 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 	@Override
 	public int firstIndex(E e) {
 		/* TODO ADD CODE HERE */
-		Node<E> node = head;
 		int index = 0;
-		while(node != null){
+		for(Node<E> node = head; node != null; node = node.next){
 			if(node.value.equals(e)){
 				return index;
 			}
-			node = node.next;
 			index++;
 		}
-		return -1;
+		return -1; //elem not found
 	}
 
 	@Override
 	public E get(int index) {
 		/* TODO ADD CODE HERE */
-		if(index < 0 || index > currentSize-1) throw new IndexOutOfBoundsException("Invalid index!");
+		if(index < 0 || index >= currentSize) throw new IndexOutOfBoundsException("Invalid index!");
 
-		Node<E> node = head;
 		int i = 0;
-		while(node != null){
+		for(Node<E> node = head; node != null; node = node.next){
 			if(i == index){
 				return node.value;
 			}
-			node = node.next;
 			i++;
 		}
 		return null;
 	}
+
 
 
 	@SuppressWarnings("unchecked")
