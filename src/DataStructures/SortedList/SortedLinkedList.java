@@ -71,7 +71,7 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 			head = new Node<E>(e, head); //value added becomes the new head with a next set to the old head
 		}
 
-		else{
+		else{ //place node where it belongs in order
 			Node<E> node = head;
 			while(node.next != null && e.compareTo(node.next.value) > 0){ //while e is the biggest value
 				node = node.next;
@@ -125,7 +125,6 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 		if(index == 0){
 			toDelete = head;
 			val = head.value;
-
 			head = head.next;
 			toDelete.clear();
 			currentSize--;
@@ -153,10 +152,6 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 	@Override
 	public int firstIndex(E e) {
 		/* TODO ADD CODE HERE */
-		if(head.value.equals(e)){
-			return 0;
-		}
-
 		Node<E> node = head;
 		int index = 0;
 		while(node != null){
@@ -174,10 +169,6 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 		/* TODO ADD CODE HERE */
 		if(index < 0 || index > currentSize-1) throw new IndexOutOfBoundsException("Invalid index!");
 
-		if(index == 0){
-			return head.value;
-		}
-
 		Node<E> node = head;
 		int i = 0;
 		while(node != null){
@@ -189,7 +180,6 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 		}
 		return null;
 	}
-
 
 
 	@SuppressWarnings("unchecked")
