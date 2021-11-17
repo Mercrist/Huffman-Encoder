@@ -130,8 +130,16 @@ public class HuffmanCoding {
 					node1.getValue() + node2.getValue()); //combine these into a root node
 
 			//create the tree
-			rootNode.setLeftChild(node1);
-			rootNode.setRightChild(node2);
+			if(node1.getKey().equals(node2.getKey()) && node1.getValue().compareTo(node2.getValue()) > 0){
+				//if the frequencies are the same, set node2 as the smaller node
+				rootNode.setLeftChild(node2);
+				rootNode.setRightChild(node1);
+			}
+
+			else{
+				rootNode.setLeftChild(node1);
+				rootNode.setRightChild(node2);
+			}
 			//set the parent to the root node
 			node1.setParent(rootNode);
 			node2.setParent(rootNode);
