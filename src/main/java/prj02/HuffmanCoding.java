@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 
 import HashTable.*;
 import List.*;
@@ -98,8 +99,19 @@ public class HuffmanCoding {
 	 */
 	public static Map<String, Integer> compute_fd(String inputString) {
 		/* TODO Compute Symbol Frequency Distribution of each character inside input string */
+		HashTableSC<String, Integer> map = new HashTableSC<>(new SimpleHashFunction<>());
 
-		return null; //Dummy Return
+		for(int i = 0; i < inputString.length(); i++){
+			String character = String.valueOf(inputString.charAt(i));
+			if(!map.containsKey(character)){
+				map.put(character, 1);
+			}
+
+			else{
+				map.put(character, map.get(character) + 1);
+			}
+		}
+		return map;
 	}
 
 	/**
@@ -109,11 +121,37 @@ public class HuffmanCoding {
 	 * @return TODO ADD RETURN AND DESCRIPTION
 	 */
 	public static BTNode<Integer, String> huffman_tree(Map<String, Integer> fD) {
+		SortedLinkedList<BTNode<Integer, String>> sll = orderFrequencies(fD);
 
-		/* TODO Construct Huffman Tree */
-		BTNode<Integer,String> rootNode;
+		while(sll.size() > 1){
+			BTNode<Integer, String> node1 = sll.get(0); //SLL is already ordered, node to the left is the smallest
+			BTNode<Integer, String> node2 = sll.get(1); //two smallest elements
+			BTNode<Integer, String> rootNode = new BTNode<>(node1.getKey() + node2.getKey(),
+					node1.getValue() + node2.getValue()); //combine these into a root node
 
-		return rootNode; //Dummy Return
+			//create the tree
+			rootNode.setLeftChild(node1);
+			rootNode.setRightChild(node2);
+			//set the parent to the root node
+			node1.setParent(rootNode);
+			node2.setParent(rootNode);
+			//update the sll
+			sll.remove(node1);
+			sll.remove(node2);
+			sll.add(rootNode);
+		}
+
+		return sll.get(0); //last elem is the root node
+	}
+
+	public static SortedLinkedList<BTNode<Integer, String>> orderFrequencies(Map<String, Integer> fD) {
+		SortedLinkedList<BTNode<Integer, String>> sll = new SortedLinkedList<BTNode<Integer, String>>();
+
+		for(String key : fD.getKeys()){ //place frequencies in SLL by <int frequency, String string>
+			sll.add(new BTNode<>(fD.get(key), key));
+		}
+
+		return sll;
 	}
 
 	/**

@@ -165,7 +165,8 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 	@Override
 	public E get(int index) {
 		/* TODO ADD CODE HERE */
-		if(index < 0 || index >= currentSize) throw new IndexOutOfBoundsException("Invalid index!");
+		if(index < 0 || index >= currentSize)
+			throw new IndexOutOfBoundsException("Can't access element at index: " + index);
 
 		int i = 0;
 		for(Node<E> node = head; node != null; node = node.next){
