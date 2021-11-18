@@ -108,7 +108,7 @@ public class HuffmanCoding {
 			}
 
 			else{
-				map.put(character, map.get(character) + 1);
+				map.put(character, map.get(character) + 1); //update frequency of that character
 			}
 		}
 		return map;
@@ -131,7 +131,7 @@ public class HuffmanCoding {
 
 			//create the tree
 			if(node1.getKey().equals(node2.getKey()) && node1.getValue().compareTo(node2.getValue()) > 0){
-				//if the frequencies are the same, set node2 as the smaller node
+				//if the frequencies are the same and node1 is bigger, set node2 as the smaller node
 				rootNode.setLeftChild(node2);
 				rootNode.setRightChild(node1);
 			}
@@ -155,7 +155,7 @@ public class HuffmanCoding {
 	public static SortedLinkedList<BTNode<Integer, String>> orderFrequencies(Map<String, Integer> fD) {
 		SortedLinkedList<BTNode<Integer, String>> sll = new SortedLinkedList<BTNode<Integer, String>>();
 
-		for(String key : fD.getKeys()){ //place frequencies in SLL by <int frequency, String string>
+		for(String key : fD.getKeys()){ //place frequencies in SLL by <Integer frequency, String string>
 			sll.add(new BTNode<>(fD.get(key), key));
 		}
 
@@ -169,21 +169,37 @@ public class HuffmanCoding {
 	 * @return ADD RETURN AND DESCRIPTION
 	 */
 	public static Map<String, String> huffman_code(BTNode<Integer,String> huffmanRoot) {
-		/* TODO Construct Prefix Codes */
-		return null; //Dummy Return
+		return traversal_helper(huffmanRoot, new HashTableSC<>(new SimpleHashFunction<>()), "");
 	}
 
-	/**
-	 * TODO ADD DESCRIPTION OF WHAT THIS METHOD DOES HERE
-	 *
-	 * @param TODO ADD PARAMETER AND DESCRIPTION
-	 * @param TODO ADD PARAMETER AND DESCRIPTION
-	 * @return TODO ADD RETURN AND DESCRIPTION
-	 */
-	public static String encode(Map<String, String> encodingMap, String inputString) {
-		/* TODO Encode String */
+	public static Map<String, String> traversal_helper(BTNode<Integer,String> huffmanRoot, Map<String, String> map, String code) {
+		if(huffmanRoot == null) return map;
+		if(huffmanRoot.getLeftChild() == null && huffmanRoot.getRightChild() == null){ //leaf nodes are the characters
+			map.put(huffmanRoot.getValue(), code);
+		}
 
-		return ""; //Dummy Return
+		traversal_helper(huffmanRoot.getLeftChild(), map, code + "0");
+		traversal_helper(huffmanRoot.getRightChild(), map, code + "1");
+		return map;
+	}
+
+
+
+		/**
+         * TODO ADD DESCRIPTION OF WHAT THIS METHOD DOES HERE
+         *
+         * @param TODO ADD PARAMETER AND DESCRIPTION
+         * @param TODO ADD PARAMETER AND DESCRIPTION
+         * @return TODO ADD RETURN AND DESCRIPTION
+         */
+	public static String encode(Map<String, String> encodingMap, String inputString) {
+		StringBuilder output = new StringBuilder(); //SB is faster
+
+		for(int i = 0; i < inputString.length(); i++){
+			String character = String.valueOf(inputString.charAt(i));
+			output.append(encodingMap.get(character)); //get the code of each character and append it to the result
+		}
+		return output.toString(); //encoded binary string
 	}
 
 	/**
@@ -252,7 +268,7 @@ public class HuffmanCoding {
 		 * */
 		for (int i = sortedList.size() - 1; i >= 0; i--) {
 			BTNode<Integer,String> node = sortedList.get(i);
-			System.out.println(node.getValue() + "\t" + node.getKey() + "\t    " + encodedHuffman.get(node.getValue()));
+			System.out.println(node.getValue() + "\t\t" + node.getKey() + " \t\t    " + encodedHuffman.get(node.getValue()));
 		}
 
 		System.out.println("\nOriginal String: \n" + inputData);

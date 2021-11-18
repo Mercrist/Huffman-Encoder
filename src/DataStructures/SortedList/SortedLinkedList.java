@@ -87,8 +87,6 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 	public boolean remove(E e) {
 		/* TODO ADD CODE HERE */
 		/* Special case: Be careful when the value is found at the head node */
-		if(currentSize < 1) throw new ArrayIndexOutOfBoundsException("Can't remove items from an empty list!");
-
 		Node<E> toDelete;
 		if(head.value.equals(e)){
 			toDelete = head;
@@ -116,8 +114,8 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 	public E removeIndex(int index) { //won't use remove() to reduce time complexity
 		/* TODO ADD CODE HERE */
 		/* Special case: Be careful when index = 0 */
-		if(index < 0 || index > currentSize-1)
-			throw new IndexOutOfBoundsException("Can't remove index: " + index);
+		if(index < 0 || index >= currentSize)
+			throw new IndexOutOfBoundsException("Can't remove out of bounds index: " + index);
 
 		Node<E> toDelete;
 		E val;
@@ -132,7 +130,7 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 		}
 
 		int i = 0;
-		node = head; //already checked the head
+		node = head;
 		while(node.next != null){ //else, search for the node in the list
 			if(i+1 == index){
 				toDelete = node.next; //store data
@@ -166,7 +164,7 @@ public class SortedLinkedList<E extends Comparable<? super E>> extends AbstractS
 	public E get(int index) {
 		/* TODO ADD CODE HERE */
 		if(index < 0 || index >= currentSize)
-			throw new IndexOutOfBoundsException("Can't access element at index: " + index);
+			throw new IndexOutOfBoundsException("Can't get out of bounds index: " + index);
 
 		int i = 0;
 		for(Node<E> node = head; node != null; node = node.next){
