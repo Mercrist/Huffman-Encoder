@@ -124,28 +124,18 @@ public class HuffmanCoding {
 		SortedLinkedList<BTNode<Integer, String>> sll = orderFrequencies(fD);
 
 		while(sll.size() > 1){
-			BTNode<Integer, String> node1 = sll.get(0); //SLL is already ordered, node to the left is the smallest
-			BTNode<Integer, String> node2 = sll.get(1); //two smallest elements
+			BTNode<Integer, String> node1 = sll.removeIndex(0); //SLL is already ordered, node to the left is the smallest
+			BTNode<Integer, String> node2 = sll.removeIndex(0); //two smallest elements
 			BTNode<Integer, String> rootNode = new BTNode<>(node1.getKey() + node2.getKey(),
 					node1.getValue() + node2.getValue()); //combine these into a root node
 
 			//create the tree
-			if(node1.getKey().equals(node2.getKey()) && node1.getValue().compareTo(node2.getValue()) > 0){
-				//if the frequencies are the same and node1 is bigger, set node2 as the smaller node
-				rootNode.setLeftChild(node2);
-				rootNode.setRightChild(node1);
-			}
-
-			else{
-				rootNode.setLeftChild(node1);
-				rootNode.setRightChild(node2);
-			}
+			rootNode.setLeftChild(node1); //tiebreaker for frequencies is already implemented in BTNode comparator
+			rootNode.setRightChild(node2);
 			//set the parent to the root node
 			node1.setParent(rootNode);
 			node2.setParent(rootNode);
 			//update the sll
-			sll.remove(node1);
-			sll.remove(node2);
 			sll.add(rootNode);
 		}
 
@@ -254,10 +244,8 @@ public class HuffmanCoding {
 
 		/* To print the table in decreasing order by frequency, we do the same thing we did when we built the tree
 		 * We add each key with it's frequency in a node into a SortedList, this way we get the frequencies in ascending order*/
-		for (String key : fD.getKeys()) {
-			BTNode<Integer,String> node = new BTNode<Integer,String>(fD.get(key),key);
-			sortedList.add(node);
-		}
+		sortedList = orderFrequencies(fD);
+
 
 		/**
 		 * Since we have the frequencies in ascending order,
