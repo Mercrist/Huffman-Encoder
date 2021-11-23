@@ -181,27 +181,30 @@ public class HashTableSC<K, V> implements Map<K, V> {
 
 	
 	/**
-	 * TODO Implement your own version of the rehash method for the HashTableSC implementation
+	 * Upon surpassing the load factor, rehashes the map. Creates a new list, with twice as many buckets, where each
+	 * bucket entry is a singly {@code LinkedList}. Iterates over every node in the original bucket and calculates its
+	 * new hash index. Utilizes separate chaining, resolving collisions by adding elements with the same hash index
+	 * in the same linked list.
 	 */
 	@SuppressWarnings("unchecked")
 	private void rehash() {
 		List<BucketNode<K, V>>[] newBuckets = new LinkedList[buckets.length*2];
 
-		for(int i = 0; i < newBuckets.length; i++){ //initialize as empty singly linked lists
+		/* Initializes each bucket entry as empty, singly linked lists. */
+		for(int i = 0; i < newBuckets.length; i++){
 			newBuckets[i] = new LinkedList<BucketNode<K, V>>();
 		}
 
-		for (List<BucketNode<K, V>> list : buckets) { //get each linked list
-			for (int j = 0; j < list.size(); j++) { //rehash every element in that list
-				BucketNode<K, V> node = list.get(j); //each node in each singly linked list
+		/* Get each linked list in the old buckets to rehash every node in it. */
+		for (List<BucketNode<K, V>> list : buckets) {
+			for (int j = 0; j < list.size(); j++) {
+				BucketNode<K, V> node = list.get(j); //rehash every element in that list
 				int newBucketIndex = hashFunction.hashCode(node.getKey()) % newBuckets.length; //new hash index
 				newBuckets[newBucketIndex].add(node);
 			}
-
 		}
 
 		buckets = newBuckets; //new rehashed bucket list
 	}
-
 
 }

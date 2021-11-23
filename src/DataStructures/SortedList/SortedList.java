@@ -24,7 +24,7 @@ public interface SortedList<E extends Comparable<? super E>> {
 	 * 
 	 * @param index List index from which the value should be removed
 	 * @return      The value that was removed from the list
-	 * @throws IndexOutOfBoundsException If index < 0 or index >= list size
+	 * @throws IndexOutOfBoundsException If index &lt; 0 or index &gt;= list size
 	 */
 	E removeIndex(int index) throws IndexOutOfBoundsException;
 	
@@ -42,7 +42,7 @@ public interface SortedList<E extends Comparable<? super E>> {
 	 * 
 	 * @param index  The index from which the value should be retrieved
 	 * @return       The value at the specified index
-	 * @throws IndexOutOfBoundsException If index < 0 or index >= list size
+	 * @throws IndexOutOfBoundsException If index &lt; 0 or index &gt;= list size
 	 */
 	E get(int index) throws IndexOutOfBoundsException;
 	

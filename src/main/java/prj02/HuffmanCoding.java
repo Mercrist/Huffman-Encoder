@@ -24,7 +24,7 @@ import Tree.*;
  *
  * @author Fernando J. Bermudez Medina (Template)
  * @author A. ElSaid (Review)
- * @author ADD YOUR NAME HERE <ADD STUDENT ID HERE> (Implementation)
+ * @author Yariel Mercado &lt;841-19-1434&gt; (Implementation)
  * @version 2.0
  * @since 10/16/2021
  */
@@ -92,19 +92,22 @@ public class HuffmanCoding {
 	}
 
 	/**
-	 * TODO ADD DESCRIPTION OF WHAT THIS METHOD DOES HERE
+	 * Computes the frequency distribution of the input text and stores the result in a map.
+	 * The keys are strings representing each distinct character in the input text and the values are
+	 * integers denoting the amount of times that character appears in the input text. The map is implemented with
+	 * a hash table: {@code HashTableSC}.
 	 *
-	 * @param TODO ADD PARAMETER AND DESCRIPTION
-	 * @return TODO ADD RETURN AND DESCRIPTION
+	 * @param inputString The input string received from the given text file.
+	 * @return Map with each unique character as a key and its number of occurrences as the value.
 	 */
 	public static Map<String, Integer> compute_fd(String inputString) {
-		/* TODO Compute Symbol Frequency Distribution of each character inside input string */
 		HashTableSC<String, Integer> map = new HashTableSC<>(new SimpleHashFunction<>());
 
 		for(int i = 0; i < inputString.length(); i++){
+			/* Making characters a String makes it easier to combine values in the huffman_tree method. */
 			String character = String.valueOf(inputString.charAt(i));
 			if(!map.containsKey(character)){
-				map.put(character, 1);
+				map.put(character, 1); //first occurrence of that character
 			}
 
 			else{
@@ -115,73 +118,59 @@ public class HuffmanCoding {
 	}
 
 	/**
-	 * TODO ADD DESCRIPTION OF WHAT THIS METHOD DOES HERE
+	 * Given the frequency distribution map of the input text, creates a Huffman tree. The tree is built
+     * from the leaves of the tree to its root by repeatedly combining the nodes with the lowest frequencies
+     * into a single root node. The root node's key is the combined values of the subtrees' frequencies, and its value, the
+	 * combined characters. Similarly, the nodes' are key-value pairs with the characters' frequency as the keys and their
+	 * corresponding character as the values. A {@code SortedList} automatically sorts the nodes.
 	 *
-	 * @param TODO ADD PARAMETER AND DESCRIPTION
-	 * @return TODO ADD RETURN AND DESCRIPTION
+	 * @param fD A frequency distribution map from the input text.
+	 * @return The root node of the completed Huffman tree.
 	 */
 	public static BTNode<Integer, String> huffman_tree(Map<String, Integer> fD) {
 		SortedLinkedList<BTNode<Integer, String>> sll = orderFrequencies(fD);
 
-		while(sll.size() > 1){
-			BTNode<Integer, String> node1 = sll.removeIndex(0); //SLL is already ordered, node to the left is the smallest
-			BTNode<Integer, String> node2 = sll.removeIndex(0); //two smallest elements
+		while(sll.size() > 1){ //the last element is the root node
+			/* Since the Sorted List is already ordered, the two lowest values have the lowest frequencies. */
+			BTNode<Integer, String> node1 = sll.removeIndex(0);
+			BTNode<Integer, String> node2 = sll.removeIndex(0);
 			BTNode<Integer, String> rootNode = new BTNode<>(node1.getKey() + node2.getKey(),
 					node1.getValue() + node2.getValue()); //combine these into a root node
 
-			//create the tree
-			rootNode.setLeftChild(node1); //tiebreaker for frequencies is already implemented in BTNode comparator
+			/* Creates the tree. SLL uses BTNode's comparator which accounts for the frequency tie-breaker. */
+			rootNode.setLeftChild(node1);
 			rootNode.setRightChild(node2);
-			//set the parent to the root node
+			/* Children should have the same parent, connects tree. */
 			node1.setParent(rootNode);
 			node2.setParent(rootNode);
-			//update the sll
+			/* Update SLL by adding the root node. */
 			sll.add(rootNode);
 		}
 
-		return sll.get(0); //last elem is the root node
-	}
-
-	public static SortedLinkedList<BTNode<Integer, String>> orderFrequencies(Map<String, Integer> fD) {
-		SortedLinkedList<BTNode<Integer, String>> sll = new SortedLinkedList<BTNode<Integer, String>>();
-
-		for(String key : fD.getKeys()){ //place frequencies in SLL by <Integer frequency, String string>
-			sll.add(new BTNode<>(fD.get(key), key));
-		}
-
-		return sll;
+		return sll.removeIndex(0); //stores less memory by removing the root node
 	}
 
 	/**
-	 * TODO ADD DESCRIPTION OF WHAT THIS METHOD DOES HERE
+	 * Given the root of the Huffman tree, traverses it to obtain the corresponding Huffman code of each character. The
+	 * Huffman codes are stored in a map with keys representing each character. Each characters' value are mapped to their
+	 * corresponding Huffman codes, of type string. Utilizes a helper function to traverse the
+	 * Huffman tree.
 	 *
-	 * @param ADD PARAMETER AND DESCRIPTION
-	 * @return ADD RETURN AND DESCRIPTION
+	 * @param huffmanRoot The root of the constructed Huffman tree.
+	 * @return A map containing each unique character and their corresponding Huffman code.
 	 */
 	public static Map<String, String> huffman_code(BTNode<Integer,String> huffmanRoot) {
 		return traversal_helper(huffmanRoot, new HashTableSC<>(new SimpleHashFunction<>()), "");
 	}
 
-	public static Map<String, String> traversal_helper(BTNode<Integer,String> huffmanRoot, Map<String, String> map, String code) {
-		if(huffmanRoot == null) return map;
-		if(huffmanRoot.getLeftChild() == null && huffmanRoot.getRightChild() == null){ //leaf nodes are the characters
-			map.put(huffmanRoot.getValue(), code);
-		}
-
-		traversal_helper(huffmanRoot.getLeftChild(), map, code + "0");
-		traversal_helper(huffmanRoot.getRightChild(), map, code + "1");
-		return map;
-	}
-
-
-
-		/**
-         * TODO ADD DESCRIPTION OF WHAT THIS METHOD DOES HERE
-         *
-         * @param TODO ADD PARAMETER AND DESCRIPTION
-         * @param TODO ADD PARAMETER AND DESCRIPTION
-         * @return TODO ADD RETURN AND DESCRIPTION
-         */
+    /**
+     * Given the encoding map, generates the Huffman encoded string of the given input string. For every character in
+	 * the input string, retrieves their corresponding code from the encoding map and builds up the encoded result.
+     *
+	 * @param encodingMap A map containing key-value pairs of each character and their respective Huffman codes.
+     * @param inputString The input string received from the given text file.
+     * @return The Huffman encoded string of the {@code inputString} parameter.
+     */
 	public static String encode(Map<String, String> encodingMap, String inputString) {
 		StringBuilder output = new StringBuilder(); //SB is faster
 
@@ -243,7 +232,7 @@ public class HuffmanCoding {
 		SortedList<BTNode<Integer,String>> sortedList = new SortedLinkedList<BTNode<Integer,String>>();
 
 		/* To print the table in decreasing order by frequency, we do the same thing we did when we built the tree
-		 * We add each key with it's frequency in a node into a SortedList, this way we get the frequencies in ascending order*/
+		 * We add each key with its frequency in a node into a SortedList, this way we get the frequencies in ascending order*/
 		sortedList = orderFrequencies(fD);
 
 
@@ -264,7 +253,7 @@ public class HuffmanCoding {
 		System.out.println("Decoded String: \n" + decodeHuff(output, encodedHuffman) + "\n");
 		System.out.println("The original string requires " + inputBytes + " bytes.");
 		System.out.println("The encoded string requires " + (int) outputBytes + " bytes.");
-		System.out.println("Difference in space requiered is " + savings + "%.");
+		System.out.println("Difference in space required is " + savings + "%.");
 	}
 
 
@@ -273,13 +262,57 @@ public class HuffmanCoding {
 	 *************************************************************************************/
 
 	/**
-	 * Auxiliary Method that decodes the generated string by the Huffman Coding Algorithm
+	 * Utilizes a {@code SortedList} to order the entries in a frequency distribution map by their frequencies,
+	 * in ascending order. If two entries have the same frequency, compares the character's values instead as a tie-breaker.
 	 *
-	 * Used for output Purposes
+	 * @param fD A given frequency distribution map of the input text.
+	 * @return A {@code SortedList} with each entry sorted in ascending order, by frequency.
+	 */
+	public static SortedLinkedList<BTNode<Integer, String>> orderFrequencies(Map<String, Integer> fD) {
+		SortedLinkedList<BTNode<Integer, String>> sll = new SortedLinkedList<BTNode<Integer, String>>();
+
+		/* Places frequencies in SLL by <Integer frequency, String character> */
+		for(String key : fD.getKeys()){
+			sll.add(new BTNode<>(fD.get(key), key));
+		}
+
+		return sll;
+	}
+
+	/**
+	 * Helper function which, given the root of a Huffman tree, traverses it and obtains the corresponding
+	 * Huffman code of each character. Each character is located at the leaves of the Huffman tree. The code for each
+	 * character is generated by adding a "0" or a "1" at the end of the string depending on whether the left or right
+	 * subtrees are recursively searched, respectively. Upon reaching a leaf node, the accumulated code thus far
+	 * is placed into a map.
+	 *
+	 * @param huffmanRoot The root of the Huffman tree to be traversed.
+	 * @param map Places each character, the current leaf node's value, as the keys and their corresponding
+	 *            Huffman codes as the value.
+	 * @param code The Huffman code of a character, as a string.
+	 * @return The final, updated map with each distinct character from the input text and their Huffman codes.
+	 */
+	public static Map<String, String> traversal_helper(BTNode<Integer,String> huffmanRoot, Map<String, String> map, String code) {
+		if(huffmanRoot == null) return map;
+		if(huffmanRoot.getLeftChild() == null && huffmanRoot.getRightChild() == null){ //leaf nodes are the characters
+			map.put(huffmanRoot.getValue(), code);
+		}
+
+		/* Code is accumulated by adding a '0' or a '1', upon branching to the left and right subtrees. */
+		traversal_helper(huffmanRoot.getLeftChild(), map, code + "0");
+		traversal_helper(huffmanRoot.getRightChild(), map, code + "1");
+		return map;
+	}
+
+	/**
+	 * Auxiliary Method that decodes the generated string by the Huffman Coding Algorithm.
+	 *
+	 * Used for output purposes.
 	 *
 	 * @param output - Encoded String
-	 * @param lookupTable
-	 * @return The decoded String, this should be the original input string parsed from the input file
+	 * @param lookupTable A map with the codes of each character from the input text as keys and the characters themselves
+	 *                    as the values. Used to decode a Huffman encoded string.
+	 * @return The decoded String. This should be the original input string parsed from the input file.
 	 */
 	public static String decodeHuff(String output, Map<String, String> lookupTable) {
 		String result = "";
@@ -296,7 +329,7 @@ public class HuffmanCoding {
 			int index = prefixCodes.firstIndex(searched);
 
 			if(index >= 0) { //Found it
-				result= result + symbols.get(index);
+				result += symbols.get(index);
 				start = i;
 			}
 		}
