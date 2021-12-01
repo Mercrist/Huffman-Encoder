@@ -179,32 +179,27 @@ public class HashTableSC<K, V> implements Map<K, V> {
 				out.printf("(%s, %s)\n", BN.getKey(), BN.getValue());
 	}
 
-	
-	/**
-	 * Upon surpassing the load factor, rehashes the map. Creates a new list, with twice as many buckets, where each
-	 * bucket entry is a singly {@code LinkedList}. Iterates over every node in the original bucket and calculates its
-	 * new hash index. Utilizes separate chaining, resolving collisions by adding elements with the same hash index
-	 * in the same linked list.
-	 */
+
 	@SuppressWarnings("unchecked")
 	private void rehash() {
-		List<BucketNode<K, V>>[] newBuckets = new LinkedList[buckets.length*2];
-
-		/* Initializes each bucket entry as empty, singly linked lists. */
-		for(int i = 0; i < newBuckets.length; i++){
-			newBuckets[i] = new LinkedList<BucketNode<K, V>>();
+		List<BucketNode<K,V>>[] oldMap = buckets;
+		List<BucketNode<K,V>>[] newMap = new LinkedList[size() * 2];
+		buckets = newMap;
+		for (int i = 0; i < buckets.length; i++) {
+			buckets[i] = new LinkedList<BucketNode<K,V>>();
 		}
+		for (List<BucketNode<K, V>> list : oldMap) {
+			for (BucketNode<K, V> old : list) {
+				/* Determine the bucket corresponding to this key */
+				int targetBucket = hashFunction.hashCode(old.getKey()) % buckets.length;
+				/* Within that bucket there is a linked list, since we're using Separate Chaining */
+				List<BucketNode<K, V>> L = buckets[targetBucket];
+				/* Finally, add the key/value to the linked list */
+				L.add(0, new BucketNode<K, V>(old.getKey(), old.getValue()));
 
-		/* Get each linked list in the old buckets to rehash every node in it. */
-		for (List<BucketNode<K, V>> list : buckets) {
-			for (int j = 0; j < list.size(); j++) {
-				BucketNode<K, V> node = list.get(j); //rehash every element in that list
-				int newBucketIndex = hashFunction.hashCode(node.getKey()) % newBuckets.length; //new hash index
-				newBuckets[newBucketIndex].add(node);
 			}
 		}
 
-		buckets = newBuckets; //new rehashed bucket list
 	}
 
 }

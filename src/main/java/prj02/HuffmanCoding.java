@@ -36,7 +36,7 @@ public class HuffmanCoding {
 
 	/* This method just runs all the main methods developed or the algorithm */
 	private static void HuffmanEncodedResult() {
-		String data = load_data("input1.txt"); //You can create other test input files and add them to the inputData Folder
+		String data = load_data("input5.txt"); //You can create other test input files and add them to the inputData Folder
 
 		/*If input string is not empty we can encode the text using our algorithm*/
 		if(!data.isEmpty()) {
