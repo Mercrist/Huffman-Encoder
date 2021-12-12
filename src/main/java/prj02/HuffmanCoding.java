@@ -24,7 +24,7 @@ import Tree.*;
  *
  * @author Fernando J. Bermudez Medina (Template)
  * @author A. ElSaid (Review)
- * @author Yariel Mercado &lt;841-19-1434&gt; (Implementation)
+ * @author Yariel Mercado (Implementation)
  * @version 2.0
  * @since 10/16/2021
  */
